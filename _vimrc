@@ -1,6 +1,3 @@
-set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
-set termencoding=utf-8
-set encoding=utf-8
 set sw=4
 set ts=4
 set et
@@ -114,32 +111,27 @@ nmap tt :%s/\t/    /g<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""新文件标题
+"按 <F5> 为 .php , .html , .css , .js 等文件，自动插入文件头 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"按 f5 为 .php , .html , .css , .js 等文件，自动插入文件头 
 map <F5> :call SetTitle()<cr>'s
 ""定义函数SetTitle，自动插入文件头 
 function SetTitle() 
 	"如果文件类型为.js文件 
 	if &filetype == 'js' 
-		call js_title() 
+		call Js_Title() 
 	"如果文件类型为.php文件 
   elseif &filetype == 'php'
     call Php_Title()
 	"如果文件类型为.css文件 
   elseif &filetype == 'css'
-    call css_title()
+    call Css_Title()
   elseif &filetype == 'html'
 	"如果文件类型为.html文件 
-		call html_title()
+		call Html_Title()
 	endif
 	"新建文件后，自动定位到文件末尾
 endfunction 
 
-
-function Php_Title() 
-  call setline( 0 , ' <?php ' )
-endfun
 
 autocmd BufNewFile * normal G
 
@@ -177,35 +169,6 @@ map <F3> :NERDTreeToggle<CR>
 imap <F3> <ESC> :NERDTreeToggle<CR>
 "打开树状文件目录  
 map <C-F3> \be  
-"代码格式优化化
-
-map <F6> :call FormartSrc()<CR><CR>
-
-"定义FormartSrc()
-func FormartSrc()
-    exec "w"
-    if &filetype == 'c'
-        exec "!astyle --style=ansi -a --suffix=none %"
-    elseif &filetype == 'cpp' || &filetype == 'hpp'
-        exec "r !astyle --style=ansi --one-line=keep-statements -a --suffix=none %> /dev/null 2>&1"
-    elseif &filetype == 'perl'
-        exec "!astyle --style=gnu --suffix=none %"
-    elseif &filetype == 'py'||&filetype == 'python'
-        exec "r !autopep8 -i --aggressive %"
-    elseif &filetype == 'java'
-        exec "!astyle --style=java --suffix=none %"
-    elseif &filetype == 'jsp'
-        exec "!astyle --style=gnu --suffix=none %"
-    elseif &filetype == 'xml'
-        exec "!astyle --style=gnu --suffix=none %"
-    else
-        exec "normal gg=G"
-        return
-    endif
-    exec "e! %"
-endfunc
-"结束定义FormartSrc
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""实用设置
@@ -323,3 +286,55 @@ inoremap [ []<ESC>i
 inoremap " ""<ESC>i
 inoremap ' ''<ESC>i
 inoremap { {}<ESC>i
+
+"PHP文件头部信息
+function Php_Title() 
+    call append( 0 , '<?php ' )
+    call append( 1 , '/** ')
+    call append( 2 , ' * ' )
+    call append( 3 , ' * Author: smaij ' )
+    call append( 4 , ' * ' )
+    call append( 5 , ' * URL : http://www.smaij.com ' )
+    call append( 6 , ' * ' )
+    call append( 7 , " * Created in: ".strftime( "%Y-%m-%d %H:%M" ) )
+    call append( 8 , ' * ' )
+    call append( 9 , ' * Description: ' )
+    call append( 10, ' *  ')
+    call append( 11, ' * Update Content: ' )
+    call append( 12, ' * ' )
+    call append( 13, ' **/ ' )
+endfunction
+
+"CSS 文件头部信息
+function Css_Title()
+    call append( 0 , '/**')
+    call append( 1 , ' *' )
+    call append( 2 , ' * Author: smaij ' )
+    call append( 3 , ' * URL: http://www.smaij.com' )
+    call append( 4 , ' * Created in: '.strftime( '%Y-%m-%d %H:%M' ) )
+    call append( 5 , ' *' )
+    call append( 6 , ' * This is the style sheet for : ' )
+    call append( 7 , ' **/')
+endfunction
+
+"JS 文件头部信息
+function Js_Title()
+    call append( 0 , '/**')
+    call append( 1 , ' *' )
+    call append( 2 , ' * Author: smaij ' )
+    call append( 3 , ' * URL: http://www.smaij.com' )
+    call append( 4 , ' * Created in: '.strftime( '%Y-%m-%d %H:%M' ) )
+    call append( 5 , ' *' )
+    call append( 6 , ' * This is the script File for : ' )
+    call append( 7 , ' **/')
+endfunction
+
+"HTML 文件头部信息
+function Html_Title()
+    call append( 0 , '<!--')
+    call append( 1 , ' Author: smaij ' )
+    call append( 2 , ' URL: http://www.smaij.com' )
+    call append( 3 , ' Created in: '.strftime( '%Y-%m-%d %H:%M' ) )
+    call append( 4 , ' This file used for : ' )
+    call append( 5 , ' --> ')
+endfunction
