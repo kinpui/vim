@@ -1,3 +1,6 @@
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
 set sw=4
 set ts=4
 set et
@@ -92,6 +95,9 @@ set viminfo+=!
 set iskeyword+=_,$,@,%,#,-
 " 字符间插入的像素行数目
 
+"解决提示乱码
+language messages zh_CN.utf-8
+
 "markdown配置
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}   set filetype=mkd
 au BufRead,BufNewFile *.{go}   set filetype=go
@@ -110,44 +116,32 @@ nmap tt :%s/\t/    /g<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""新文件标题
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"新建.c,.h,.sh,.java文件，自动插入文件头 
-autocmd BufNewFile *.js,*.[ch],*.php,*.rb,*.css,*.html exec ":call SetTitle()" 
+"按 f5 为 .php , .html , .css , .js 等文件，自动插入文件头 
+map <F5> :call SetTitle()<cr>'s
 ""定义函数SetTitle，自动插入文件头 
-func SetTitle() 
+function SetTitle() 
 	"如果文件类型为.js文件 
 	if &filetype == 'js' 
-		call setline(1,"/*js*/") 
-		call append(line("."), "") 
+		call js_title() 
 	"如果文件类型为.php文件 
-    elseif &filetype == 'php'
-		call setline(1, "/*************************************************************************") 
-        call append(line("."),"*")
-        call append(line("."),"# coding=utf-8")
-	    call append(line(".")+1, "") 
-		call append(line(".")+2, " ************************************************************************/") 
-
+  elseif &filetype == 'php'
+    call Php_Title()
 	"如果文件类型为.css文件 
-    elseif &filetype == 'css'
-        call setline(1,"/* * css*/")
-        call append(line("."),"# encoding: utf-8")
-	    call append(line(".")+1, "")
-
-"    elseif &filetype == 'mkd'
-"        call setline(1,"<head><meta charset=\"UTF-8\"></head>")
-	elseif &filetype == 'html'
+  elseif &filetype == 'css'
+    call css_title()
+  elseif &filetype == 'html'
 	"如果文件类型为.html文件 
-		call setline(1, "/*************************************************************************") 
-		call append(line("."), "	> File Name: ".expand("%")) 
-		call append(line(".")+1, "	> Author: ") 
-		call append(line(".")+2, "	> Mail: ") 
-		call append(line(".")+3, "	> Created Time: ".strftime("%c")) 
-		call append(line(".")+4, " ************************************************************************/") 
-		call append(line(".")+5, "")
+		call html_title()
 	endif
 	"新建文件后，自动定位到文件末尾
-endfunc 
-autocmd BufNewFile * normal G
+endfunction 
 
+
+function Php_Title() 
+  call setline( 0 , ' <?php ' )
+endfun
+
+autocmd BufNewFile * normal G
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "键盘命令
