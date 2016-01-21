@@ -1,4 +1,4 @@
-我的vim配置文件
+q我的vim配置文件
 ===
 配置出最合适自己的工具才是真理·
 
@@ -52,3 +52,10 @@
 34. rkdown to HTML 
 35. 将tab替换为空格
 36. 定义函数SetTitle，自动插入文件头 
+
+****
+#<center>LOG</center>
+
+2016-1-21
+
+* HTML 头部信息中mate 写错
